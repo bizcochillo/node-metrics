@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: uploader
+  name: uploader
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: uploader
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        app: uploader
+    spec:
+      containers:
+      - image: quay.io/rh-ee-apalma/test-metrics:v0.1
+        name: test-metrics
+        env: 
+        - name: IMAGE_UPLOAD_FOLDER
+          value: "/data"        
+        volumeMounts: 
+        - name: data-vol
+          mountPath: /data
+        ports:
+        - containerPort: 8080
+      volumes: 
+      - name: data-vol
+        emptyDir: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  creationTimestamp: null
+  labels:
+    app: uploader
+  name: uploader
+spec:
+  ports:
+  - name: http-8080
+    port: 8080
+    protocol: TCP
+    targetPort: 8080
+  selector:
+    app: uploader

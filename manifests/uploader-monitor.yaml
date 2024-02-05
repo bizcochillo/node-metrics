@@ -1,0 +1,14 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  labels:
+    k8s-app: prometheus-demo-metrics
+  name: prometheus-demo-metrics  
+spec:
+  endpoints:
+  - interval: 30s
+    port: http-8080
+    scheme: http
+  selector:
+    matchLabels:
+      app: uploader
